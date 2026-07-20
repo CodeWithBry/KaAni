@@ -1,0 +1,76 @@
+.calendar-view {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.card.weather-forecast-card {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 25px;
+}
+
+.card.weather-forecast-online {
+    display: flex;
+    justify-content: center;
+    border: 1px solid #e3b4a7;
+    background-color: #f8f0e5;
+}
+
+.temperature {
+    font-size: 20px;
+}
+
+.percentage {
+    font-size: 15px;
+    color: #366d81;
+}
+
+.emergency-preparation-card{
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #e3b4a7;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.checklist {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #534745;
+}
+
+.checklist input{
+    width: 25px;
+    height: 25px;
+}
+
+/* weather-suitable-crops (added: was empty in original file) */
+.crop-list {
+    background-color: #ffffff;
+    border: 1px solid #e7dfcb;
+    border-radius: 15px;
+    padding: 5px 20px;
+}
+
+.crop-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e7dfcb;
+    color: #534745;
+    font-size: 15px;
+}
+
+.crop-row:last-child {
+    border-bottom: none;
+}

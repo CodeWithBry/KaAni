@@ -1,0 +1,74 @@
+/* capture box */
+.capture-card {
+    background-color: #e6eedf;
+    border: 2px dashed #b9cdb4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.capture-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.capture-title {
+    font-weight: 800;
+    color: #34682e;
+}
+
+.capture-sub {
+    font-size: 12px;
+    color: #918870;
+}
+
+/* past diagnoses */
+.diagnosis-card {
+    background-color: #ffffff;
+}
+
+.diagnosis-row {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #e7dfcb;
+}
+
+.diagnosis-row:last-child {
+    border-bottom: none;
+}
+
+.diagnosis-thumb {
+    width: 55px;
+    height: 55px;
+    flex: none;
+    border-radius: 12px;
+    background-color: #e6eedf;
+    object-fit: cover;
+}
+
+.diagnosis-title {
+    font-weight: 800;
+    color: #534745;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.diagnosis-desc {
+    font-size: 13px;
+    color: #918870;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* report button */
+.report-button {
+    border-color: #a13d2b;
+    color: #a13d2b;
+    width: 100%;
+}

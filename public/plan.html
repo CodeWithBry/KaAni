@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaAni – Plan</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/plan.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="upper-header">
+            <div class="brand">
+                <h1 class="brand-title">KaAni</h1>
+                <p class="brand-tagline">Kasama sa Bukid at Dagat</p>
+            </div>
+            <div class="header-actions">
+                <button class="location-button">
+                    <span class="location">Brgy. San Isidro</span>
+                </button>
+                <button class="internet-button">
+                    <img class="internet-image" src="assets/icons/internet.svg" alt="internet">
+                </button>
+            </div>
+        </div>
+        <div class="lower-header">
+            <h2><span class="status">Basic (Offline)</span>&nbsp;3 items queued</h2>
+        </div>
+    </header>
+
+    <main class="farm">
+        <section class="my-farm-boat" style="display:flex;flex-direction:column;gap:20px;">
+
+            <h2 class="section-h2">Plan</h2>
+
+            <!-- ── AI Assistant button ── -->
+            <button class="ai-assistant-btn" id="openAiBtn">
+                <div class="ai-btn-left">
+                    <div class="ai-icon">🌾</div>
+                    <div>
+                        <span class="ai-btn-title">KaAni AI Assistant</span>
+                        <span class="ai-btn-sub">Magtanong tungkol sa bukid, panahon, o presyo</span>
+                    </div>
+                </div>
+                <span class="ai-chevron">›</span>
+            </button>
+
+            <!-- ── Calendar header ── -->
+            <div>
+                <div class="plan-calendar-header">
+                    <button class="calendar-nav-btn" id="prevWeek">‹</button>
+                    <span class="calendar-month-label" id="monthLabel">Hulyo 2025</span>
+                    <button class="calendar-nav-btn" id="nextWeek">›</button>
+                </div>
+                <br>
+                <!-- week day strip -->
+                <div class="week-strip" id="weekStrip">
+                    <!-- populated by JS -->
+                </div>
+            </div>
+
+            <!-- ── Tasks for selected day ── -->
+            <div class="card day-tasks-card">
+                <p class="day-tasks-date" id="selectedDateLabel">—</p>
+                <div id="dayTaskList">
+                    <p class="plan-empty">Loading…</p>
+                </div>
+            </div>
+
+            <!-- ── Add task buttons ── -->
+            <div class="plan-add-row">
+                <button class="btn btn-primary" id="addTaskBtn">+ Add Task</button>
+                <button class="btn btn-outline" id="addCropBtn">+ Add Crop Event</button>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- ── AI Chat modal ── -->
+    <div class="ai-modal-overlay" id="aiModal">
+        <div class="ai-modal">
+            <div class="ai-modal-top">
+                <span class="ai-modal-title">🌾 KaAni AI</span>
+                <button class="ai-modal-close" id="closeAiBtn">✕</button>
+            </div>
+            <div class="ai-chat-window" id="chatWindow">
+                <div class="ai-bubble bot">
+                    Kamusta! Ako si KaAni AI. Paano kita matutulungan ngayon?
+                    Maaari kang magtanong tungkol sa pinakamainam na oras ng pagtatanim,
+                    presyo sa palengke, o kung paano mapabuti ang iyong ani. 🌱
+                </div>
+            </div>
+            <div class="ai-input-row">
+                <input class="ai-input" id="chatInput" type="text" placeholder="Magtanong…" autocomplete="off">
+                <button class="ai-send-btn" id="sendBtn">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav">
+            <a href="index.html">
+                <img class="nav-image" alt="home" src="assets/icons/home.svg">
+                <p>Dashboard</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="weather.html">
+                <img class="nav-image" alt="weather" src="assets/icons/cloud.svg">
+                <p>Weather</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="plan.html" class="active">
+                <img class="nav-image" alt="plan" src="assets/icons/book.svg">
+                <p>Plan</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="health.html">
+                <img class="nav-image" alt="camera" src="assets/icons/camera.svg">
+                <p>Health</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="support.html">
+                <img class="nav-image" alt="support" src="assets/icons/profile.svg">
+                <p>Support</p>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const API = 'http://localhost:3000/api';
+        const aiModal = document.getElementById('aiModal');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        let convoHistory = [];
+
+        document.getElementById('openAiBtn').addEventListener('click', () => {
+            aiModal.classList.add('open');
+            chatInput.focus();
+        });
+        document.getElementById('closeAiBtn').addEventListener('click', () => {
+            aiModal.classList.remove('open');
+        });
+        aiModal.addEventListener('click', e => {
+            if (e.target === aiModal) aiModal.classList.remove('open');
+        });
+
+        function appendBubble(text, role) {
+            const div = document.createElement('div');
+            div.className = 'ai-bubble ' + role;
+            div.textContent = text;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return div;
+        }
+
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            chatInput.value = '';
+            sendBtn.disabled = true;
+
+            appendBubble(text, 'user');
+            const botBubble = appendBubble('Nag-iisip…', 'bot');
+
+            let started = false;
+            let fullReply = '';
+
+            try {
+                const res = await fetch(`${API}/chat-bot/send-message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        convo: convoHistory
+                    })
+                });
+
+                if (!res.ok || !res.body) throw new Error('Bad response');
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const frames = buffer.split('\n\n');
+                    buffer = frames.pop();
+
+                    for (const frame of frames) {
+                        const line = frame.trim();
+                        if (!line.startsWith('data:')) continue;
+
+                        let payload;
+                        try {
+                            payload = JSON.parse(line.slice(5).trim());
+                        } catch {
+                            continue;
+                        }
+
+                        if (payload.type === 'chunk') {
+                            if (!started) { botBubble.textContent = ''; started = true; }
+                            fullReply += payload.content;
+                            botBubble.textContent = fullReply;
+                            chatWindow.scrollTop = chatWindow.scrollHeight;
+                        } else if (payload.type === 'error') {
+                            throw new Error(payload.content || 'AI error');
+                        }
+                    }
+                }
+
+                convoHistory.push({ role: 'user', parts: [{ text }] });
+                convoHistory.push({ role: 'model', parts: [{ text: fullReply }] });
+
+            } catch (err) {
+                console.error(err);
+                botBubble.textContent = 'Paumanhin, wala akong koneksyon ngayon. Subukan muli kapag may internet.';
+            } finally {
+                sendBtn.disabled = false;
+                chatInput.focus();
+            }
+        }
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        //  * CALENDAR
+        const DAYS_PH = ['Lin', 'Lun', 'Mar', 'Miy', 'Huw', 'Biy', 'Sab'];
+        const MONTHS_PH = [
+            'Enero', 'Pebrero', 'Marso', 'Abril', 'Mayo', 'Hunyo',
+            'Hulyo', 'Agosto', 'Setyembre', 'Oktubre', 'Nobyembre', 'Disyembre'
+        ];
+
+        let selectedDate = new Date();
+        selectedDate.setHours(0, 0, 0, 0);
+        let weekOffset = 0;
+
+        /* all tasks: { date: 'YYYY-MM-DD', id, title, category, done } */
+        let allTasks = [];
+
+        function toYMD(d) {
+            return d.toISOString().split('T')[0];
+        }
+
+        /* build the 7-day strip for the current week */
+        function renderWeekStrip() {
+            const strip = document.getElementById('weekStrip');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            /* find Monday of the current view-week */
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - today.getDay() + 1 + weekOffset * 7);
+
+            const monthSet = new Set();
+            const pills = [];
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+                monthSet.add(MONTHS_PH[d.getMonth()] + ' ' + d.getFullYear());
+
+                const ymd = toYMD(d);
+                const hasTasks = allTasks.some(t => t.date === ymd);
+                const isSelected = ymd === toYMD(selectedDate);
+
+                pills.push({ d, ymd, hasTasks, isSelected });
+            }
+
+            /* update month label */
+            document.getElementById('monthLabel').textContent = [...monthSet].join(' – ');
+
+            strip.innerHTML = pills.map(({ d, ymd, hasTasks, isSelected }) => `
+                <button class="day-pill ${isSelected ? 'active' : ''} ${!hasTasks ? 'no-tasks' : ''}"
+                    data-ymd="${ymd}">
+                    <span class="day-name">${DAYS_PH[d.getDay()]}</span>
+                    <span class="day-num">${d.getDate()}</span>
+                    <span class="day-dot"></span>
+                </button>
+            `).join('');
+
+            strip.querySelectorAll('.day-pill').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedDate = new Date(btn.dataset.ymd);
+                    renderWeekStrip();
+                    renderDayTasks();
+                });
+            });
+        }
+
+        /* render tasks for the selected day */
+        function renderDayTasks() {
+            const ymd = toYMD(selectedDate);
+            const label = document.getElementById('selectedDateLabel');
+            label.textContent =
+                DAYS_PH[selectedDate.getDay()] + ', ' +
+                selectedDate.getDate() + ' ' +
+                MONTHS_PH[selectedDate.getMonth()];
+
+            const list = document.getElementById('dayTaskList');
+            const tasks = allTasks.filter(t => t.date === ymd);
+
+            if (!tasks.length) {
+                list.innerHTML = '<p class="plan-empty">Walang gawain ngayong araw na ito.</p>';
+                return;
+            }
+
+            const dotColor = { crop: 'green', boat: 'blue', expense: 'gold', urgent: 'brick' };
+
+            list.innerHTML = tasks.map(t => `
+                <div class="plan-task-item">
+                    <span class="plan-task-dot ${dotColor[t.category] || 'green'}"></span>
+                    <div class="plan-task-body">
+                        <p class="plan-task-title" style="${t.done ? 'text-decoration:line-through;color:#b0a898' : ''}">${t.title}</p>
+                        <p class="plan-task-meta">${t.time || ''} ${t.category ? '· ' + t.category : ''}</p>
+                    </div>
+                    <input type="checkbox" class="plan-task-done" ${t.done ? 'checked' : ''}
+                        data-id="${t.id}" onchange="togglePlanTask(${t.id}, this.checked)">
+                </div>
+            `).join('');
+        }
+
+        window.togglePlanTask = async function (id, done) {
+            const task = allTasks.find(t => t.id === id);
+            if (task) task.done = done;
+            renderWeekStrip();
+            try {
+                await fetch(`${API}/tasks/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ done })
+                });
+            } catch { /* offline */ }
+        };
+
+        /* load tasks from backend */
+        async function loadPlanTasks() {
+            try {
+                const res = await fetch(`${API}/tasks`);
+                allTasks = await res.json();
+            } catch {
+                /* offline fallback */
+                const today = toYMD(new Date());
+                const tomorrow = toYMD(new Date(Date.now() + 86400000));
+                allTasks = [
+                    { id: 1, date: today, title: 'Mag-fertilize ng palay — Palayan A', category: 'crop', time: '7:00 AM', done: false },
+                    { id: 2, date: today, title: 'I-check ang irrigation pump', category: 'crop', time: '9:00 AM', done: false },
+                    { id: 3, date: today, title: 'I-record ang harvest ng talong', category: 'expense', time: '4:00 PM', done: false },
+                    { id: 4, date: tomorrow, title: 'Bumili ng abono sa kooperatiba', category: 'expense', time: '8:00 AM', done: false },
+                    { id: 5, date: tomorrow, title: 'Palayain ang pangisdaan — Plot B', category: 'boat', time: '5:30 AM', done: false },
+                ];
+            }
+            renderWeekStrip();
+            renderDayTasks();
+        }
+
+        document.getElementById('prevWeek').addEventListener('click', () => {
+            weekOffset--;
+            renderWeekStrip();
+        });
+        document.getElementById('nextWeek').addEventListener('click', () => {
+            weekOffset++;
+            renderWeekStrip();
+        });
+
+        /* add task stub */
+        document.getElementById('addTaskBtn').addEventListener('click', () => {
+            const title = prompt('Anong gawain ang idadagdag?');
+            if (!title) return;
+            const newTask = {
+                id: Date.now(),
+                date: toYMD(selectedDate),
+                title,
+                category: 'crop',
+                time: '',
+                done: false
+            };
+            allTasks.push(newTask);
+            renderWeekStrip();
+            renderDayTasks();
+            /* persist to backend */
+            fetch(`${API}/tasks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTask)
+            }).catch(() => { });
+        });
+
+        document.getElementById('addCropBtn').addEventListener('click', () => {
+            const title = prompt('Anong crop event ang idadagdag?');
+            if (!title) return;
+            const newTask = {
+                id: Date.now(),
+                date: toYMD(selectedDate),
+                title,
+                category: 'crop',
+                time: '',
+                done: false
+            };
+            allTasks.push(newTask);
+            renderWeekStrip();
+            renderDayTasks();
+            fetch(`${API}/tasks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTask)
+            }).catch(() => { });
+        });
+
+        /* ── init ── */
+        loadPlanTasks();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaAni</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/health.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="upper-header">
+            <div class="brand">
+                <h1 class="brand-title">KaAni</h1>
+                <p class="brand-tagline">Kasama sa Bukid at Dagat</p>
+            </div>
+
+            <div class="header-actions">
+                <button class="location-button">
+                    <span class="location">location</span>
+                </button>
+                <button class="internet-button">
+                    <img class="internet-image" src="assets/icons/internet.svg">
+                </button>
+            </div>
+        </div>
+
+        <div class="lower-header">
+            <h2><span class="status">Basic (Offline)</span> 3 items queued</h2>
+        </div>
+    </header>
+
+    <main class="health">
+        <section class="capture">
+            <h2 class="section-h2">Crop / Sea Health</h2>
+            <br>
+            <div class="card capture-card">
+                <img class="capture-icon" alt="capture" src="assets/icons/camera.svg">
+                <p class="capture-title">Tap to capture photo</p>
+                <p class="capture-sub">AI diagnosis powered by Gemini Vision</p>
+            </div>
+        </section>
+
+        <section class="past-diagnoses">
+            <h2 class="section-subtitle">Past diagnoses</h2>
+            <br>
+            <div class="card diagnosis-card">
+                <div class="diagnosis-row">
+                    <img class="diagnosis-thumb" alt="diagnosis" src="">
+                    <div>
+                        <p class="diagnosis-title">Talong - Leaf spot <span class="tag green">Done</span></p>
+                        <p class="diagnosis-desc">Likely fungal. Apply copper-based fungicide, improve airflow.</p>
+                    </div>
+                </div>
+                <div class="diagnosis-row">
+                    <img class="diagnosis-thumb" alt="diagnosis" src="">
+                    <div>
+                        <p class="diagnosis-title">Bangus - fin discoloration <span class="tag gold">Pending</span></p>
+                        <p class="diagnosis-desc">Queued - will process when back online.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="agri-officer">
+            <div class="card">
+                <p class="online-note">Available online</p>
+            </div>
+        </section>
+
+        <section class="report-illegal">
+            <button class="btn btn-outline report-button">Report illegal fishing</button>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav">
+            <a href="index.html">
+                <img class="nav-image" alt="home" src="assets/icons/home.svg">
+                <p>Home</p>
+            </a>
+        </div>
+
+        <div class="nav">
+            <a href="weather.html">
+                <img class="nav-image" alt="weather" src="assets/icons/cloud.svg">
+                <p>Weather</p>
+            </a>
+        </div>
+
+        <div class="nav">
+            <a href="farm.html">
+                <img class="nav-image" alt="farm" src="assets/icons/water.svg">
+                <p>Farm</p>
+            </a>
+        </div>
+
+        <div class="nav">
+            <a href="health.html" class="active">
+                <img class="nav-image" alt="camera" src="assets/icons/camera.svg">
+                <p>Health</p>
+            </a>
+        </div>
+
+        <div class="nav">
+            <a href="support.html">
+                <img class="nav-image" alt="support" src="assets/icons/profile.svg">
+                <p>Support</p>
+            </a>
+        </div>
+    </nav>
+</body>
+
+</html>

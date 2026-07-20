@@ -1,0 +1,169 @@
+/* role switch */
+.role-switch {
+    display: flex;
+    background-color: #e6eedf;
+    border-radius: 15px;
+    padding: 5px;
+    gap: 5px;
+}
+
+.role-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+
+.role-label {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 10px;
+    color: #34682e;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#role-farm:checked ~ .role-switch label[for="role-farm"],
+#role-boat:checked ~ .role-switch label[for="role-boat"] {
+    background-color: #3a7433;
+    color: #ffffff;
+}
+
+.role-content {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#role-farm:checked ~ .role-content.farm-content {
+    display: flex;
+}
+
+#role-boat:checked ~ .role-content.boat-content {
+    display: flex;
+}
+
+/* profit card */
+.profit-card {
+    background-color: #ffffff;
+}
+
+.profit-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.profit-value {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.profit-value.pos {
+    color: #3a7433;
+}
+
+.profit-value.neg {
+    color: #a13d2b;
+}
+
+.profit-label {
+    font-size: 11px;
+    color: #918870;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+/* crop calendar card */
+.calendar-card {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.calendar-icon {
+    width: 45px;
+    height: 45px;
+    flex: none;
+    border-radius: 10px;
+    background-color: #f5e3ce;
+    object-fit: cover;
+}
+
+.calendar-title {
+    font-weight: 800;
+    color: #534745;
+}
+
+.calendar-sub {
+    font-size: 13px;
+    color: #918870;
+    margin-top: 3px;
+}
+
+/* boat chart card */
+.chart-card {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.chart-image {
+    width: 70px;
+    height: 70px;
+    flex: none;
+    border-radius: 50%;
+    background-color: #e1edf0;
+    object-fit: cover;
+}
+
+.chart-title {
+    font-weight: 800;
+    color: #534745;
+}
+
+.chart-sub {
+    font-size: 13px;
+    color: #918870;
+    margin-top: 3px;
+}
+
+/* catch log */
+.catch-log {
+    background-color: #ffffff;
+}
+
+.catch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e7dfcb;
+}
+
+.catch-row:last-child {
+    border-bottom: none;
+}
+
+.catch-name {
+    font-weight: 800;
+    color: #534745;
+}
+
+.catch-date {
+    font-size: 12px;
+    color: #918870;
+    margin-top: 2px;
+}
+
+.catch-value {
+    font-weight: 800;
+    color: #534745;
+}

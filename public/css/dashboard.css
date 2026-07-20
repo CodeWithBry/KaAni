@@ -1,0 +1,284 @@
+/* ─── Greeting card ──────────────────────────────────────────── */
+.card.greeting {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #3a7433 0%, #2d5a27 100%);
+    padding: 22px 20px;
+    color: #ffffff;
+    font-size: 15px;
+    border-radius: 15px;
+    border: none;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card.greeting::after {
+    content: "";
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+}
+
+.greeting-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.greeting-tip {
+    font-size: 13px;
+    color: #c8e8c2;
+    line-height: 1.5;
+}
+
+/* ─── Sync status row ────────────────────────────────────────── */
+.sync-status {
+    display: flex;
+    gap: 12px;
+}
+
+.card.status-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #ffffff;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+/* ─── Weather summary ────────────────────────────────────────── */
+.section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #918870;
+    letter-spacing: 0.06em;
+}
+
+.card.weather-card {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+    background-color: #ffffff;
+}
+
+.weather-icon-wrap {
+    width: 56px;
+    height: 56px;
+    background-color: #fef9ec;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+
+.weather-icon-wrap img {
+    width: 36px;
+    height: 36px;
+}
+
+.weather-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.weather-temp {
+    font-size: 26px;
+    font-weight: 800;
+    color: #534745;
+    line-height: 1;
+}
+
+.weather-desc {
+    font-size: 13px;
+    color: #918870;
+}
+
+.weather-loading {
+    font-size: 13px;
+    color: #918870;
+    font-style: italic;
+}
+
+/* ─── Income vs Loss ─────────────────────────────────────────── */
+.card.income-card {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.income-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.income-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.income-value {
+    font-size: 17px;
+    font-weight: 800;
+    color: #534745;
+}
+
+.income-value.pos { color: #3a7433; }
+.income-value.neg { color: #a13d2b; }
+
+.income-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #918870;
+    letter-spacing: 0.05em;
+}
+
+.income-bar-wrap {
+    height: 6px;
+    background-color: #f0ece3;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.income-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #3a7433, #5aaa52);
+    transition: width 0.6s ease;
+}
+
+/* ─── Tasks for today ────────────────────────────────────────── */
+.card.tasks-card {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+    gap: 0;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0ece3;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.task-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #3a7433;
+    flex: none;
+    cursor: pointer;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 14px;
+    color: #534745;
+    line-height: 1.4;
+}
+
+.task-item input:checked + .task-text {
+    text-decoration: line-through;
+    color: #b0a898;
+}
+
+.task-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.task-tag.urgent {
+    background-color: #f5dfd8;
+    color: #a13d2b;
+}
+
+.task-tag.normal {
+    background-color: #e6eedf;
+    color: #34682e;
+}
+
+.task-empty {
+    font-size: 13px;
+    color: #b0a898;
+    text-align: center;
+    padding: 10px 0;
+    font-style: italic;
+}
+
+/* ─── Market snapshot ────────────────────────────────────────── */
+.card.market-card {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.market-list {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.market-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid #f0ece3;
+    font-size: 14px;
+    color: #534745;
+}
+
+.market-row:last-child { border-bottom: none; }
+
+.market-price {
+    font-weight: 800;
+    color: #534745;
+}
+
+.market-change {
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+}
+
+.market-change.up { color: #3a7433; }
+.market-change.dn { color: #a13d2b; }
+
+/* ─── Government programs ────────────────────────────────────── */
+.card.gov-card {
+    display: flex;
+    justify-content: center;
+    background-color: #d8954215;
+}

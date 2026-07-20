@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaAni – Dashboard</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="upper-header">
+            <div class="brand">
+                <h1 class="brand-title">KaAni</h1>
+                <p class="brand-tagline">Kasama sa Bukid at Dagat</p>
+            </div>
+            <div class="header-actions">
+                <button class="location-button" id="locationBtn">
+                    <span class="location" id="locationLabel">Brgy. San Isidro</span>
+                </button>
+                <button class="internet-button" id="internetBtn">
+                    <img class="internet-image" src="assets/icons/internet.svg" alt="internet">
+                </button>
+            </div>
+        </div>
+        <div class="lower-header">
+            <h2><span class="status" id="syncStatus">Basic (Offline)</span>&nbsp;<span id="pendingLabel">3 items queued</span></h2>
+        </div>
+    </header>
+
+    <main class="dashboard">
+
+        <!-- ── Greeting ── -->
+        <section class="card greeting">
+            <p class="greeting-name" id="greetingText">Magandang umaga, Aling Rosa!</p>
+            <p class="greeting-tip" id="greetingTip">Tip: Ideal ang lupa ngayon para sa pagtanim ng talong — konsistent ang moisture ngayong linggo.</p>
+        </section>
+
+        <!-- ── Sync status ── -->
+        <section class="sync-status">
+            <div class="card status-card">
+                <h2 class="section-h2" id="lastSyncedTime">09:41 AM</h2>
+                <p class="section-p">LAST SYNCED</p>
+            </div>
+            <div class="card status-card">
+                <h2 class="section-h2" id="pendingCount">3</h2>
+                <p class="section-p">PENDING SYNC</p>
+            </div>
+        </section>
+
+        <!-- ── Weather Today ── -->
+        <section class="weather">
+            <p class="section-label">Weather Today</p>
+            <br>
+            <div class="card weather-card" id="weatherCard">
+                <div class="weather-icon-wrap">
+                    <img id="weatherIcon" alt="weather" src="assets/icons/sun.svg">
+                </div>
+                <div class="weather-card-text">
+                    <p class="weather-temp" id="weatherTemp">—°C</p>
+                    <p class="weather-desc" id="weatherDesc">Loading…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Income vs Loss ── -->
+        <section>
+            <p class="section-label">Income vs Loss — This Month</p>
+            <br>
+            <div class="card income-card" id="incomeCard">
+                <div class="income-grid">
+                    <div class="income-item">
+                        <p class="income-value pos" id="incomeValue">₱18,400</p>
+                        <p class="income-label">Income</p>
+                    </div>
+                    <div class="income-item">
+                        <p class="income-value neg" id="expenseValue">₱6,150</p>
+                        <p class="income-label">Expenses</p>
+                    </div>
+                    <div class="income-item">
+                        <p class="income-value pos" id="profitValue">₱12,250</p>
+                        <p class="income-label">Net Profit</p>
+                    </div>
+                </div>
+                <!-- Progress bar: income used up vs profit -->
+                <div class="income-bar-wrap">
+                    <div class="income-bar-fill" id="incomeBar" style="width: 66%;"></div>
+                </div>
+                <p style="font-size:11px; color:#918870;">Profit margin: <strong id="profitMargin">66%</strong></p>
+            </div>
+        </section>
+
+        <!-- ── Tasks / Objectives Today ── -->
+        <section>
+            <p class="section-label">Tasks for Today</p>
+            <br>
+            <div class="card tasks-card">
+                <div class="task-list" id="taskList">
+                    <!-- populated by JS -->
+                    <p class="task-empty">Loading tasks…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Market Snapshot ── -->
+        <section>
+            <p class="section-label">Market Prices — Today</p>
+            <br>
+            <div class="card market-card">
+                <div class="market-list" id="marketList">
+                    <!-- populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Government Programs ── -->
+        <section class="government-programs">
+            <p class="section-label">Government Programs</p>
+            <br>
+            <div class="card gov-card">
+                <p class="online-note">Available online</p>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav">
+            <a href="index.html" class="active">
+                <img class="nav-image" alt="home" src="assets/icons/home.svg">
+                <p>Dashboard</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="weather.html">
+                <img class="nav-image" alt="weather" src="assets/icons/cloud.svg">
+                <p>Weather</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="plan.html">
+                <img class="nav-image" alt="plan" src="assets/icons/book.svg">
+                <p>Plan</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="health.html">
+                <img class="nav-image" alt="camera" src="assets/icons/camera.svg">
+                <p>Health</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="support.html">
+                <img class="nav-image" alt="support" src="assets/icons/profile.svg">
+                <p>Support</p>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const API = 'http://localhost:4000/api';
+
+        /* ── helpers ── */
+        function peso(n) {
+            return '₱' + Number(n).toLocaleString('en-PH');
+        }
+
+        function greet() {
+            const h = new Date().getHours();
+            if (h < 12) return 'Magandang umaga';
+            if (h < 18) return 'Magandang hapon';
+            return 'Magandang gabi';
+        }
+
+        /* ── greeting ── */
+        document.getElementById('greetingText').textContent = greet() + ', Aling Rosa!';
+
+        /* ── weather ── */
+        async function loadWeather() {
+            try {
+                const res = await fetch(`${API}/weather/current`);
+                const data = await res.json();
+                document.getElementById('weatherTemp').textContent = data.temperature + '°C';
+                document.getElementById('weatherDesc').textContent = data.description + ' — ' + data.location;
+                const icons = { 'sunny': 'sun', 'cloudy': 'cloud', 'partly cloudy': 'cloudy', 'rainy': 'rain' };
+                const key = (data.condition || '').toLowerCase();
+                const icon = icons[key] || 'cloud';
+                document.getElementById('weatherIcon').src = `assets/icons/${icon}.svg`;
+                // update cached time
+                document.getElementById('lastSyncedTime').textContent =
+                    new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+            } catch {
+                document.getElementById('weatherDesc').textContent = 'Cached — Brgy. San Isidro';
+                document.getElementById('weatherTemp').textContent = '29°C';
+                document.getElementById('weatherIcon').src = 'assets/icons/cloud.svg';
+            }
+        }
+
+        /* ── income ── */
+        async function loadIncome() {
+            try {
+                const res = await fetch(`${API}/farm/income/monthly`);
+                const d = await res.json();
+                document.getElementById('incomeValue').textContent = peso(d.income);
+                document.getElementById('expenseValue').textContent = peso(d.expenses);
+                document.getElementById('profitValue').textContent = peso(d.profit);
+                const pct = Math.round((d.profit / d.income) * 100);
+                document.getElementById('incomeBar').style.width = pct + '%';
+                document.getElementById('profitMargin').textContent = pct + '%';
+            } catch { /* keep defaults */ }
+        }
+
+        /* ── tasks ── */
+        async function loadTasks() {
+            const list = document.getElementById('taskList');
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const res = await fetch(`${API}/tasks?date=${today}`);
+                const tasks = await res.json();
+
+                if (!tasks.length) {
+                    list.innerHTML = '<p class="task-empty">Walang naka-schedule na gawain ngayon.</p>';
+                    return;
+                }
+                list.innerHTML = tasks.map(t => `
+                    <label class="task-item">
+                        <input type="checkbox" ${t.done ? 'checked' : ''}
+                            onchange="toggleTask(${t.id}, this.checked)">
+                        <span class="task-text">${t.title}</span>
+                        <span class="task-tag ${t.urgent ? 'urgent' : 'normal'}">
+                            ${t.urgent ? 'Urgent' : 'Normal'}
+                        </span>
+                    </label>
+                `).join('');
+            } catch {
+                /* fallback hardcoded */
+                list.innerHTML = `
+                    <label class="task-item">
+                        <input type="checkbox">
+                        <span class="task-text">Mag-fertilize ng palay — Palayan A</span>
+                        <span class="task-tag urgent">Urgent</span>
+                    </label>
+                    <label class="task-item">
+                        <input type="checkbox">
+                        <span class="task-text">I-check ang irrigation pump</span>
+                        <span class="task-tag normal">Normal</span>
+                    </label>
+                    <label class="task-item">
+                        <input type="checkbox">
+                        <span class="task-text">I-record ang harvest ng talong</span>
+                        <span class="task-tag normal">Normal</span>
+                    </label>
+                `;
+            }
+        }
+
+        async function toggleTask(id, done) {
+            try {
+                await fetch(`${API}/tasks/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ done })
+                });
+            } catch { /* offline — silently ignore */ }
+        }
+
+        /* ── market prices ── */
+        async function loadMarket() {
+            const list = document.getElementById('marketList');
+            try {
+                const res = await fetch(`${API}/market/prices`);
+                const items = await res.json();
+                list.innerHTML = items.map(m => `
+                    <div class="market-row">
+                        <span>${m.name}</span>
+                        <span>
+                            <span class="market-price">${peso(m.price)}/kg</span>
+                            <span class="market-change ${m.change >= 0 ? 'up' : 'dn'}">
+                                ${m.change >= 0 ? '▲' : '▼'} ${Math.abs(m.change)}%
+                            </span>
+                        </span>
+                    </div>
+                `).join('');
+            } catch {
+                list.innerHTML = `
+                    <div class="market-row"><span>Palay (Butil)</span><span class="market-price">₱21/kg<span class="market-change up"> ▲2%</span></span></div>
+                    <div class="market-row"><span>Talong</span><span class="market-price">₱45/kg<span class="market-change dn"> ▼1%</span></span></div>
+                    <div class="market-row"><span>Bangus</span><span class="market-price">₱180/kg<span class="market-change up"> ▲3%</span></span></div>
+                `;
+            }
+        }
+
+        /* ── init ── */
+        loadWeather();
+        loadIncome();
+        loadTasks();
+        loadMarket();
+    </script>
+</body>
+
+</html>

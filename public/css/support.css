@@ -1,0 +1,98 @@
+/* this month summary */
+.summary-card {
+    background-color: #ffffff;
+}
+
+.summary-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.summary-value {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.summary-value.pos {
+    color: #3a7433;
+}
+
+.summary-value.neg {
+    color: #a13d2b;
+}
+
+.summary-label {
+    font-size: 11px;
+    color: #918870;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+/* savings goal */
+.savings-card {
+    background-color: #ffffff;
+}
+
+.progress-track {
+    height: 10px;
+    border-radius: 999px;
+    background-color: #e7dfcb;
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 62%;
+    background-color: #d78a2b;
+    border-radius: 999px;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #918870;
+    font-weight: 700;
+}
+
+.progress-text b {
+    color: #534745;
+}
+
+/* government assistance */
+
+.gov-row {
+    display: flex;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e7dfcb;
+}
+
+.gov-row:last-child {
+    border-bottom: none;
+}
+
+.gov-icon {
+    width: 45px;
+    height: 45px;
+    flex: none;
+    border-radius: 50%;
+    background-color: #e1edf0;
+    object-fit: cover;
+}
+
+.gov-title {
+    font-weight: 800;
+    color: #534745;
+}
+
+.gov-desc {
+    font-size: 13px;
+    color: #918870;
+    margin-top: 3px;
+    line-height: 1.4;
+}

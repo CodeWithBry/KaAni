@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaAni – Weather</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/weather.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="upper-header">
+            <div class="brand">
+                <h1 class="brand-title">KaAni</h1>
+                <p class="brand-tagline">Kasama sa Bukid at Dagat</p>
+            </div>
+            <div class="header-actions">
+                <button class="location-button">
+                    <span class="location" id="locationLabel">Brgy. San Isidro</span>
+                </button>
+                <button class="internet-button">
+                    <img class="internet-image" src="assets/icons/internet.svg" alt="internet">
+                </button>
+            </div>
+        </div>
+        <div class="lower-header">
+            <h2><span class="status" id="syncBadge">Basic (Offline)</span>&nbsp;<span id="pendingLabel">3 items queued</span></h2>
+        </div>
+    </header>
+
+    <main class="weather">
+
+        <!-- ── 72-hour forecast ── -->
+        <section class="weather-forecast">
+            <h2 class="section-h2" id="currentTemp">—°C</h2>
+            <br>
+            <p class="section-p" id="currentDesc">Brgy. San Isidro — 72 hour outlook</p>
+            <br>
+            <div class="calendar-view" id="forecastRow">
+                <!-- skeleton cards while loading -->
+                <div class="card weather-forecast-card">
+                    <p class="section-p">Now</p><br>
+                    <img class="weather-image" alt="sun" src="assets/icons/sun.svg"><br>
+                    <p class="temperature">29°</p>
+                    <p class="percentage">10%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Live banner ── -->
+        <section class="weather-forecast-online">
+            <div class="card weather-forecast-online" id="liveBanner">
+                <p class="online-note" id="liveNote">⟳ Fetching live data…</p>
+            </div>
+        </section>
+
+        <!-- ── Emergency checklist ── -->
+        <section class="emergency-preparation">
+            <h2 class="section-h2">EMERGENCY PREPARATION</h2>
+            <br>
+            <div class="emergency-preparation-card" id="emergencyList">
+                <label class="checklist">
+                    <input type="checkbox" class="checkbox" data-key="flashlight">
+                    <span>Charge flashlight &amp; power bank</span>
+                </label>
+                <br>
+                <label class="checklist">
+                    <input type="checkbox" class="checkbox" data-key="tools">
+                    <span>Secure boat/farm tools</span>
+                </label>
+                <br>
+                <label class="checklist">
+                    <input type="checkbox" class="checkbox" data-key="food">
+                    <span>Prepare 3-day emergency food</span>
+                </label>
+                <br>
+                <label class="checklist">
+                    <input type="checkbox" class="checkbox" data-key="evac">
+                    <span>Know nearest evacuation center</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- ── Weather-suitable crops ── -->
+        <section class="weather-suitable-crops">
+            <h2 class="section-h2">WEATHER-SUITABLE CROPS</h2>
+            <br>
+            <div class="crop-list" id="cropList">
+                <div class="crop-row">
+                    <span>Palay (Rice)</span>
+                    <span class="tag green">Recommended</span>
+                </div>
+                <div class="crop-row">
+                    <span>Talong (Eggplant)</span>
+                    <span class="tag green">Recommended</span>
+                </div>
+                <div class="crop-row">
+                    <span>Sibuyas (Onion)</span>
+                    <span class="tag gold">Caution</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav">
+            <a href="index.html">
+                <img class="nav-image" alt="home" src="assets/icons/home.svg">
+                <p>Dashboard</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="weather.html" class="active">
+                <img class="nav-image" alt="weather" src="assets/icons/cloud.svg">
+                <p>Weather</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="plan.html">
+                <img class="nav-image" alt="plan" src="assets/icons/book.svg">
+                <p>Plan</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="health.html">
+                <img class="nav-image" alt="camera" src="assets/icons/camera.svg">
+                <p>Health</p>
+            </a>
+        </div>
+        <div class="nav">
+            <a href="support.html">
+                <img class="nav-image" alt="support" src="assets/icons/profile.svg">
+                <p>Support</p>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const API = 'http://localhost:4000/api';
+
+        /* ── icon mapping ── */
+        const conditionIcon = (c = '') => {
+            const lc = c.toLowerCase();
+            if (lc.includes('rain')) return 'rain';
+            if (lc.includes('cloud') && lc.includes('part')) return 'cloudy';
+            if (lc.includes('cloud')) return 'cloud';
+            return 'sun';
+        };
+
+        /* ── restore checklist state ── */
+        document.querySelectorAll('.checkbox').forEach(cb => {
+            const key = 'chk_' + cb.dataset.key;
+            cb.checked = localStorage.getItem(key) === '1';
+            cb.addEventListener('change', () =>
+                localStorage.setItem(key, cb.checked ? '1' : '0'));
+        });
+
+        /* ── render forecast cards ── */
+        function renderForecast(hours) {
+            const row = document.getElementById('forecastRow');
+            row.innerHTML = hours.map((h, i) => `
+                <div class="card weather-forecast-card">
+                    <p class="section-p">${i === 0 ? 'Now' : h.label}</p>
+                    <br>
+                    <img class="weather-image" alt="${h.condition}"
+                        src="assets/icons/${conditionIcon(h.condition)}.svg">
+                    <br>
+                    <p class="temperature">${h.temperature}°</p>
+                    <p class="percentage">${h.rain_chance}%</p>
+                </div>
+            `).join('');
+        }
+
+        /* ── render crop suitability ── */
+        function renderCrops(crops) {
+            if (!crops || !crops.length) return;
+            const tagClass = { recommended: 'green', caution: 'gold', avoid: 'brick' };
+            document.getElementById('cropList').innerHTML = crops.map(c => `
+                <div class="crop-row">
+                    <span>${c.name}</span>
+                    <span class="tag ${tagClass[c.status] || 'gold'}">
+                        ${c.status.charAt(0).toUpperCase() + c.status.slice(1)}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        /* ── main fetch ── */
+        async function loadWeather() {
+            const liveNote = document.getElementById('liveNote');
+            const syncBadge = document.getElementById('syncBadge');
+            try {
+                const res = await fetch(`${API}/weather/full`);
+                if (!res.ok) throw new Error('offline');
+                const data = await res.json();
+
+                /* current conditions */
+                document.getElementById('currentTemp').textContent = data.current.temperature + '°C';
+                document.getElementById('currentDesc').textContent =
+                    data.current.description + ' — ' + data.location;
+
+                /* forecast strip */
+                if (data.hourly && data.hourly.length) renderForecast(data.hourly);
+
+                /* crop suitability */
+                if (data.crops) renderCrops(data.crops);
+
+                /* live banner */
+                const now = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+                liveNote.textContent = `✓ Live data as of ${now}`;
+                liveNote.style.color = '#3a7433';
+                syncBadge.textContent = 'Live';
+                syncBadge.style.color = '#3a7433';
+
+            } catch {
+                /* offline fallback */
+                document.getElementById('currentTemp').textContent = '29°C';
+                document.getElementById('currentDesc').textContent = 'Partly cloudy (cached) — Brgy. San Isidro';
+                liveNote.textContent = '⚠ Offline — showing cached forecast';
+                liveNote.style.color = '#d78a2b';
+                syncBadge.textContent = 'Basic (Offline)';
+
+                renderForecast([
+                    { label: 'Now', temperature: 29, rain_chance: 10, condition: 'sunny' },
+                    { label: '1PM', temperature: 30, rain_chance: 15, condition: 'partly cloudy' },
+                    { label: '2PM', temperature: 28, rain_chance: 55, condition: 'rainy' },
+                    { label: '3PM', temperature: 26, rain_chance: 80, condition: 'rainy' },
+                    { label: '4PM', temperature: 27, rain_chance: 20, condition: 'sunny' },
+                ]);
+            }
+        }
+
+        loadWeather();
+    </script>
+</body>
+
+</html>
